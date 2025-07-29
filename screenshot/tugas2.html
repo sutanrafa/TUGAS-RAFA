@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <title>Website menggunakan tabel</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #f7f7f7;
+      margin: 0;
+      padding: 0;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+
+    .header {
+      background-color: #cceeff;
+      text-align: center;
+      padding: 20px;
+    }
+
+    .nav {
+      background-color: #99ddff;
+      text-align: center;
+      padding: 10px;
+    }
+
+    .nav a {
+      margin: 0 15px;
+      text-decoration: none;
+      color: blue;
+    }
+
+    .content {
+      height: 300px;
+    }
+
+    td {
+      vertical-align: top;
+      padding: 10px;
+      border: 1px solid #ccc;
+    }
+
+    .sidebar {
+      width: 20%;
+      background-color: #eef;
+    }
+
+    .main {
+      width: 60%;
+      background-color: #fff;
+    }
+
+    .info {
+      width: 20%;
+      background-color: #eef;
+    }
+
+    .footer {
+      background-color: #cceeff;
+      text-align: center;
+      padding: 10px;
+      font-size: 0.9em;
+    }
+  </style>
+</head>
+<body>
+
+  <table>
+    <tr>
+      <td colspan="3" class="header">
+        <h1>Website menggunakan tabel</h1>
+        <p>contoh membuat website lama menggunakan tabel</p>
+      </td>
+    </tr>
+
+    <tr>
+      <td colspan="3" class="nav">
+        <a href="#">Beranda</a> |
+        <a href="#">Tentang Kami</a> |
+        <a href="#">Produk</a> |
+        <a href="#">Kontak</a>
+      </td>
+    </tr>
+
+    <tr class="content">
+      <td class="sidebar">
+        <strong>Menu Samping</strong><br>
+        - <a href="#">google</a><br>
+        - <a href="#">gmail</a><br>
+        - <a href="#">youtube</a>
+      </td>
+
+      <td class="main">
+        <h3>Selamat Datang di Website Kami!</h3>
+      </td>
+
+      <td class="info">
+        <strong>Info</strong><br><br>
+        Hubungi kami:<br>
+        <a href="mailto:info@websitejadul.com">info@websiterafa.com</a>
+      </td>
+    </tr>
+
+    <tr>
+      <td colspan="3" class="footer">
+        &copy; 2025 Website Rafa. Semua Hak Dilindungi.
+      </td>
+    </tr>
+  </table>
+
+</body>
+</html>
