@@ -1,0 +1,65 @@
+<html>
+    <head>
+        <title>Form2</title>
+    </head>
+    <body style="background-color: rgb(255, 255, 255);">
+        <style>
+            body {
+                padding: 8px;
+                margin: 0px;
+                font-family: Arial, Helvetica, sans-serif;
+            }
+            h2{
+                color: red
+            }
+            p.ex {color: rgb(0, 0, 255);
+            }
+            p.exx {color: yellow;
+            }
+            p.exxx {color: rgb(0, 255, 0);
+            }
+            legend{
+                font-size: 18px;
+                font-weight: bold;
+                color: orange;
+                padding: 10px;
+                border-bottom: 2px solid #ccc;
+            }
+            .kalimat{
+                animation: infinite;
+            }
+        </style> 
+        <marquee behavior="alternate" direction="left"><h2>Demo Membuat Kontrol Text</h2></marquee>
+        <form>
+            <fieldset>
+                <legend>BIO DATA </legend>
+            <p class="ex">Nama: </p>
+            <input type="text" name="txtnama" size="30" />
+            <p class="exxxx">Password: </p>
+            <input type="password" name="txtpassword" size="30" />
+            <p class="exx">Alamat :</p>
+            <input type="text" name="txtalamat" size="50" />
+            <p class="exxx">No. Telepon :</p>
+            <input type="text" name="txttelepon" size="20" />
+            <p class="exxxxx">Gender Anda</p>
+            <input type="radio" name="gender" value="male">
+            Laki Laki
+            <input type="radio" name="gender" value="female">
+            Perempuan
+            <p class="exxxxxx">Jurusan Anda</p>
+            <select>
+                <option value="pplg">PPLG</option>
+                <option value="tkj">TKJ</option>
+                <option value="mplb">MPLB</option>
+                <option value="pmsrn">PEMASARAN</option>
+            </select>
+            <p class="exxxxxxx">Pesan Anda</p>
+            <textarea id="pesan" name="pesan" rows="4" cols="50"></textarea>
+            <p class="exxxxxxxx">Foto Anda</p>
+            <input type="file" value="image">Masukan Foto
+            <p><input type="submit" value="Submit" />  <input type="reset" value="Reset" /></p>
+            <input type="checkbox"> Saya sudah membaca kententuan privasi
+            </fieldset>  
+        </form>
+    </body>
+</html>
