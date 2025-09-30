@@ -1,0 +1,255 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Game Snake 2 Player</title>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+    <style>
+        body { 
+            text-align:center; 
+            font-family: Arial, sans-serif; 
+            background: linear-gradient(135deg, #2c3e50, #8e44ad); 
+            color:white; 
+        }
+        canvas { 
+            background: linear-gradient(135deg, #ecf0f1, #bdc3c7); 
+            display:block; 
+            margin:15px auto; 
+            border:3px solid #1abc9c; 
+            border-radius:15px;
+            box-shadow: 0 0 20px rgba(0,0,0,0.6);
+        }
+        #controls { margin: 10px; }
+        button { 
+            padding:12px 25px; 
+            margin:5px; 
+            border:none; 
+            border-radius:8px; 
+            cursor:pointer; 
+            background: linear-gradient(135deg, #1abc9c, #16a085); 
+            color:white; 
+            font-weight:bold; 
+            font-size: 15px;
+            transition:0.3s;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.3);
+        }
+        button:hover { 
+            background: linear-gradient(135deg, #27ae60, #2ecc71); 
+            transform: scale(1.1); 
+        }
+        h1 { 
+            text-shadow:2px 2px 8px black; 
+            font-size: 40px;
+            margin-top: 15px;
+        }
+    </style>
+</head>
+<body>
+
+    <h1>🐍 Game Snake 🐍</h1>
+    <div id="controls">
+        <button id="singleBtn">🎮 Mode 1 Player</button>
+        <button id="multiBtn">👥 Mode 2 Player</button>
+    </div>
+
+    <canvas id="ruang" width="500" height="500"></canvas>
+
+    <script>
+    $(document).ready(function() {
+        var ruang = $("#ruang")[0];
+        var ctx = ruang.getContext("2d");
+        var lebar = $("#ruang").width();
+        var tinggi = $("#ruang").height();
+        var cw = 10;
+
+        var mode2player = false;  
+        var game_loop;
+        var makanan;
+        var nilai1, nilai2, highScore = 0;
+
+        var ular1, ular2;
+        var arah1, arah2;
+        var gameOverFlag = false;
+
+        function init() {
+            arah1 = "right";
+            arah2 = "left";
+            buat_ular();
+            buat_makanan();
+            nilai1 = 0;
+            nilai2 = 0;
+            gameOverFlag = false;
+            if (typeof game_loop != "undefined") clearInterval(game_loop);
+            game_loop = setInterval(paint, 100);
+        }
+
+        function buat_ular() {
+            ular1 = [];
+            for (var i = 4; i >= 0; i--) {
+                ular1.push({x:i, y:5});
+            }
+
+            if(mode2player){
+                ular2 = [];
+                for (var i = 9; i >= 5; i--) {
+                    ular2.push({x:i, y:15});
+                }
+            }
+        }
+
+        function buat_makanan() {
+            makanan = {
+                x: Math.floor(Math.random() * (lebar/cw)),
+                y: Math.floor(Math.random() * (tinggi/cw))
+            };
+        }
+
+        function paint() {
+            if(gameOverFlag) return; 
+
+            // background canvas
+            var gradient = ctx.createLinearGradient(0, 0, lebar, tinggi);
+            gradient.addColorStop(0, "#ecf0f1");
+            gradient.addColorStop(1, "#dcdde1");
+            ctx.fillStyle = gradient;
+            ctx.fillRect(0,0,lebar,tinggi);
+
+            ctx.strokeStyle = "#2c3e50";
+            ctx.strokeRect(0,0,lebar,tinggi);
+
+            // ====== UPDATE PLAYER 1 ======
+            var nx1 = ular1[0].x;
+            var ny1 = ular1[0].y;
+            if(arah1 == "right") nx1++;
+            else if(arah1 == "left") nx1--;
+            else if(arah1 == "up") ny1--;
+            else if(arah1 == "down") ny1++;
+
+            // cek tabrakan player 1
+            if(nx1 < 0 || nx1 >= lebar/cw || ny1 < 0 || ny1 >= tinggi/cw || cek_tabrakan(nx1,ny1,ular1)){
+                gameOver(mode2player ? "Player 2 MENANG" : "Player 1 KALAH"); return;
+            }
+
+            var ekor1;
+            if(nx1 == makanan.x && ny1 == makanan.y){
+                ekor1 = {x:nx1,y:ny1};
+                nilai1++;
+                buat_makanan();
+            } else {
+                ekor1 = ular1.pop();
+                ekor1.x = nx1; ekor1.y = ny1;
+            }
+            ular1.unshift(ekor1);
+
+            // ====== UPDATE PLAYER 2 ======
+            if(mode2player){
+                var nx2 = ular2[0].x;
+                var ny2 = ular2[0].y;
+                if(arah2 == "right") nx2++;
+                else if(arah2 == "left") nx2--;
+                else if(arah2 == "up") ny2--;
+                else if(arah2 == "down") ny2++;
+
+                if(nx2 < 0 || nx2 >= lebar/cw || ny2 < 0 || ny2 >= tinggi/cw || cek_tabrakan(nx2,ny2,ular2)){
+                    gameOver("Player 1 MENANG"); return;
+                }
+
+                // cek tabrakan antar ular
+                if(cek_tabrakan(nx1, ny1, ular2)) { gameOver("Player 2 MENANG"); return; }
+                if(cek_tabrakan(nx2, ny2, ular1)) { gameOver("Player 1 MENANG"); return; }
+
+                var ekor2;
+                if(nx2 == makanan.x && ny2 == makanan.y){
+                    ekor2 = {x:nx2,y:ny2};
+                    nilai2++;
+                    buat_makanan();
+                } else {
+                    ekor2 = ular2.pop();
+                    ekor2.x = nx2; ekor2.y = ny2;
+                }
+                ular2.unshift(ekor2);
+            }
+
+            // gambar ular1
+            for(var i=0;i<ular1.length;i++){
+                var c=ular1[i];
+                paint_cell(c.x,c.y, i==0 ? "#2ecc71" : "#1abc9c");
+            }
+            // gambar ular2
+            if(mode2player){
+                for(var j=0;j<ular2.length;j++){
+                    var c2=ular2[j];
+                    paint_cell(c2.x,c2.y, j==0 ? "#e74c3c" : "#c0392b");
+                }
+            }
+
+            // gambar makanan
+            paint_cell(makanan.x,makanan.y,"#f1c40f");
+
+            // skor
+            ctx.fillStyle="#2c3e50";
+            ctx.font="16px Arial";
+            ctx.fillText("Player 1: "+nilai1,5,tinggi-25);
+            if(mode2player) ctx.fillText("Player 2: "+nilai2,5,tinggi-8);
+
+            let currentHigh = mode2player ? Math.max(nilai1,nilai2) : nilai1;
+            if(currentHigh > highScore) highScore = currentHigh;
+            ctx.fillStyle="#8e44ad";
+            ctx.fillText("High Score: "+highScore,lebar-140,tinggi-10);
+        }
+
+        function paint_cell(x,y,color){
+            ctx.fillStyle=color;
+            ctx.fillRect(x*cw,y*cw,cw,cw);
+            ctx.strokeStyle="#ffffff";
+            ctx.strokeRect(x*cw,y*cw,cw,cw);
+        }
+
+        function cek_tabrakan(x,y,array){
+            for(var i=1;i<array.length;i++){ // index 0 = kepala, jadi mulai dari 1
+                if(array[i].x==x && array[i].y==y) return true;
+            }
+            return false;
+        }
+
+        function gameOver(msg){
+            clearInterval(game_loop);
+            gameOverFlag = true;
+            ctx.fillStyle = "rgba(0,0,0,0.7)";
+            ctx.fillRect(0,0,lebar,tinggi);
+            ctx.fillStyle = "#e74c3c";
+            ctx.font = "28px Arial";
+            ctx.fillText("💀 GAME OVER 💀", lebar/2 - 120, tinggi/2 - 20);
+            ctx.fillStyle = "yellow";
+            ctx.fillText(msg, lebar/2 - 100, tinggi/2 + 10);
+            ctx.font = "18px Arial";
+            ctx.fillStyle = "white";
+            ctx.fillText("Klik tombol untuk main lagi 🎮", lebar/2 - 130, tinggi/2 + 40);
+        }
+
+        // kontrol player 1 (←↑→↓) dan player 2 (WASD)
+        $(document).keydown(function(e){
+            var key=e.which;
+            if(gameOverFlag) return;
+            // player 1
+            if(key==37 && arah1!="right") arah1="left";
+            else if(key==38 && arah1!="down") arah1="up";
+            else if(key==39 && arah1!="left") arah1="right";
+            else if(key==40 && arah1!="up") arah1="down";
+            // player 2
+            if(mode2player){
+                if(key==65 && arah2!="right") arah2="left";  
+                else if(key==87 && arah2!="down") arah2="up"; 
+                else if(key==68 && arah2!="left") arah2="right"; 
+                else if(key==83 && arah2!="up") arah2="down"; 
+            }
+        });
+
+        // tombol mode
+        $("#singleBtn").click(function(){ mode2player=false; init(); });
+        $("#multiBtn").click(function(){ mode2player=true; init(); });
+
+        init();
+    });
+    </script>
+</body>
+</html>
